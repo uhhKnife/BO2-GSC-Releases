@@ -8,49 +8,44 @@ onPlayerConnect()
     for(;;)
     {
         level waittill("connected", player);
-        player thread drawZombiesCounter();
+        player thread healthCounter();
+        player thread zombieCounter();
     }
 }
 
-drawZombiesCounter()
+healthCounter ()
+{
+	self endon ("disconnect");
+	level endon( "end_game" );
+	common_scripts/utility::flag_wait( "initial_blackscreen_passed" );
+	self.healthText = maps/mp/gametypes_zm/_hud_util::createFontString ("hudsmall", 1.5);
+	self.healthText maps/mp/gametypes_zm/_hud_util::setPoint ("CENTER", "CENTER", 100, 180);
+	self.healthText.label = &"Health: ^2";
+	while ( 1 )
+	{
+		self.healthText setValue(self.health);
+		wait 0.25;
+	}
+}
+
+zombieCounter()
 {
 	self endon( "disconnect" );
 	level endon( "end_game" );
-	level waittill( "start_of_round" );
-    self.zombiesCounter = maps/mp/gametypes_zm/_hud_util::createFontString( "hudsmall" , 1.9 );
-    self.zombiesCounter maps/mp/gametypes_zm/_hud_util::setPoint( "CENTER", "CENTER", "CENTER", 190 );
-    self.zombiesCounter.alpha = 0;
+	common_scripts/utility::flag_wait( "initial_blackscreen_passed" );
+    self.zombieText = maps/mp/gametypes_zm/_hud_util::createFontString( "hudsmall" , 1.5 );
+    self.zombieText maps/mp/gametypes_zm/_hud_util::setPoint( "CENTER", "CENTER", -100, 180 );
     while( 1 )
     {
-        self.zombiesCounter setValue( ( maps/mp/zombies/_zm_utility::get_round_enemy_array().size + level.zombie_total ) );
+        self.zombieText setValue( ( maps/mp/zombies/_zm_utility::get_round_enemy_array().size + level.zombie_total ) );
         if( ( maps/mp/zombies/_zm_utility::get_round_enemy_array().size + level.zombie_total ) != 0 )
         {
-        	self.zombiesCounter.label = &"Zombies: ^1";
-        	if( self.zombiesCounter.alpha != 1 )
-        	{
-        		self.zombiesCounter fadeovertime( 0.5 );
-    			self.zombiesCounter.alpha = 1;
-    		}
+        	self.zombieText.label = &"Zombies: ^1";
         }
         else
         {
-        	self.zombiesCounter.label = &"Zombies: ^6";
-        	for( i = 0; i < 15; i++ )
-        	{
-        		if( self.zombiesCounter.alpha == 1 )
-        		{
-        			self.zombiesCounter fadeovertime( 0.5 );
-    				self.zombiesCounter.alpha = 0;
-    			}
-    			else
-    			{
-    				self.zombiesCounter fadeovertime( 0.5 );
-    				self.zombiesCounter.alpha = 1;
-    			}
-    			wait 0.5;
-    		}
-        	level waittill( "start_of_round" );
+        	self.zombieText.label = &"Zombies: ^6";
         }
-        wait 0.05;
+        wait 0.25;
     }
 }
