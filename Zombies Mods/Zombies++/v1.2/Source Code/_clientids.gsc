@@ -444,9 +444,6 @@ initServerDvars() //credits to JezuzLizard!!! This is a huge help in making this
 	//enable custom mule kick
 	level.enableMuleKick = getDvarIntDefault( "enableMuleKick", 1 );
 	level.zombie_vars[ "enableMuleKick" ] = level.enableMuleKick;
-	checks();
-	thread zombie_spawn_delay_fix();
-	thread zombie_speed_fix();
 }
 
 gscRestart()
